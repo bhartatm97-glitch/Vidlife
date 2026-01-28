@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VidLife: Bad Decisions Simulator (18+)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    background: #0b0b0b;
+    color: #eaeaea;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+  h1 { font-size: 2.4em; }
+  .stat { margin: 6px; font-size: 1.15em; }
+  #event {
+    margin-top: 25px;
+    font-size: 1.35em;
+    color: #ff6b6b;
+    min-height: 70px;
+  }
+  .warning {
+    font-size: 0.9em;
+    color: #aaaaaa;
+    margin-top: 10px;
+  }
+  button {
+    margin-top: 25px;
+    padding: 14px 30px;
+    font-size: 1.1em;
+    background: #ff6b6b;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div id="ageGate">
+  <h1>VidLife: Bad Decisions Simulator</h1>
+  <p><strong>18+ ONLY</strong></p>
+  <p>Adult humor. Real consequences. No glorification.</p>
+  <button onclick="enterGame()">I am 18+</button>
+</div>
+
+<div id="game" class="hidden">
+  <h1>VidLife</h1>
+  <p>You do nothing. Choices happen anyway.</p>
+
+  <div class="stat">💸 Money: <span id="money">70</span></div>
+  <div class="stat">🧠 Brain Cells: <span id="brain">100</span></div>
+  <div class="stat">📱 Clout: <span id="clout">10</span></div>
+  <div class="stat">😵 Sanity: <span id="sanity">100</span></div>
+  <div class="stat">❤️ Health: <span id="health">100</span></div>
+
+  <div id="event">Life is warming up...</div>
+  <div class="warning" id="warning"></div>
+
+  <button onclick="startLife()">Start Life</button>
+</div>
+
+<script>
+let money = 70;
+let brain = 100;
+let clout = 10;
+let sanity = 100;
+let health = 100;
+let years = 0;
+let interval;
+
+const events = [
+  {
+    text: "You thought it was 'just once.' Your body disagreed.",
+    sanity: -20,
+    health: -25,
+    warning: "Short-term highs often come with long-term damage."
+  },
+  {
+    text: "You hooked up because you were bored. Boredom won.",
+    sanity: -15,
+    brain: -5,
+    warning: "Impulse rarely improves mental health."
+  },
+  {
+    text: "You felt invincible. Biology filed a complaint.",
+    health: -20,
+    warning: "Your body keeps receipts."
+  },
+  {
+    text: "You chased dopamine. It ghosted you.",
+    sanity: -25,
+    warning: "Temporary pleasure doesn't fix long-term stress."
+  },
+  {
+    text: "You confused attention with affection.",
+    sanity: -20,
+    clout: 10,
+    warning: "Validation isn't the same as connection."
+  },
+  {
+    text: "You said 'I deserve this.' You couldn't afford it.",
+    money: -30,
+    sanity: -10,
+    warning: "Financial stress compounds fast."
+  },
+  {
+    text: "You ignored sleep. Sleep took revenge.",
+    brain: -15,
+    health: -10,
+    warning: "Burnout isn't a flex."
+  },
+  {
+    text: "You laughed it off. Later hit harder.",
+    sanity: -30,
+    warning: "Avoidance delays consequences, not removes them."
+  },
+  {
+    text: "You tried to numb feelings instead of processing them.",
+    sanity: -25,
+    health: -15,
+    warning: "Unprocessed emotions stack quietly."
+  }
+];
+
+function enterGame() {
+  document.getElementById("ageGate").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+}
+
+function startLife() {
+  if (interval) return;
+  interval = setInterval(lifeEvent, 2400);
+}
+
+function lifeEvent() {
+  years++;
+  const e = events[Math.floor(Math.random() * events.length)];
+
+  money += e.money || 0;
+  brain += e.brain || 0;
+  clout += e.clout || 0;
+  sanity += e.sanity || 0;
+  health += e.health || 0;
+
+  document.getElementById("money").innerText = money;
+  document.getElementById("brain").innerText = brain;
+  document.getElementById("clout").innerText = clout;
+  document.getElementById("sanity").innerText = sanity;
+  document.getElementById("health").innerText = health;
+
+  document.getElementById("event").innerText =
+    "Year " + years + ": " + e.text;
+
+  document.getElementById("warning").innerText =
+    "⚠️ " + e.warning;
+
+  if (sanity <= 0 || health <= 0) {
+    clearInterval(interval);
+    document.getElementById("event").innerText =
+      "GAME OVER 💀 You lasted " + years +
+      " years. Bad decisions were funny. Consequences were not.";
+    document.getElementById("warning").innerText =
+      "Awareness > glorification. Take care of yourself.";
+  }
+}
+</script>
+
+</body>
+</html>
